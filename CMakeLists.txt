@@ -146,7 +146,7 @@ endif()
 ## Configure input files
 #############################################################################
 
-include_directories(. abseil-cpp ${CMAKE_CURRENT_BINARY_DIR})
+# include_directories(. abseil-cpp ${CMAKE_CURRENT_BINARY_DIR})
 
 set(ilbc_source_files
     modules/audio_coding/codecs/ilbc/abs_quant.c
@@ -307,6 +307,10 @@ endif()
 #############################################################################
 
 add_library(ilbc ${ilbc_source_files})
+
+# Add the current project directory to the include path
+target_include_directories(ilbc PRIVATE ${CMAKE_SOURCE_DIR})
+
 generate_export_header(ilbc)
 set_target_properties(ilbc PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 3)
 set_target_properties(ilbc PROPERTIES CLEAN_DIRECT_OUTPUT 1)
@@ -314,8 +318,14 @@ set_target_properties(ilbc PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 add_executable(ilbc_test modules/audio_coding/codecs/ilbc/test/iLBC_test.c)
 target_link_libraries(ilbc_test ilbc)
 
+# Add the current project directory to the include path for ilbc_test
+target_include_directories(ilbc_test PRIVATE ${CMAKE_SOURCE_DIR})
+
 add_executable(ilbc_test2 iLBC_test2.c)
 target_link_libraries(ilbc_test2 ilbc)
+
+# Add the current project directory to the include path for ilbc_test
+target_include_directories(ilbc_test2 PRIVATE ${CMAKE_SOURCE_DIR})
 
 add_custom_target(ilbc_test-sample
                   ilbc_test 20 ${CMAKE_CURRENT_SOURCE_DIR}/sample.pcm encoded.ilbc decoded.pcm)
